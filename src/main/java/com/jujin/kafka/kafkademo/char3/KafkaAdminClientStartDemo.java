@@ -1,6 +1,7 @@
 package com.jujin.kafka.kafkademo.char3;
 
 import org.apache.kafka.clients.admin.*;
+import org.apache.kafka.common.config.ConfigResource;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -96,10 +97,45 @@ public class KafkaAdminClientStartDemo {
     }
 
 
+    /**
+     * 列出 config  参考char19 配置管理
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    public static void describeConfigs() throws ExecutionException, InterruptedException {
+        Properties props = initConfig();
+        AdminClient client = AdminClient.create(props);
+        ConfigResource resource =
+                new ConfigResource(ConfigResource.Type.TOPIC, TOPIC); // ①
+        DescribeConfigsResult result =
+                client.describeConfigs(Collections.singleton(resource)); // ②
+        Config config = result.all().get().get(resource); // ③
+        System.out.println(config); // ④
+        client.close();
+    }
+
+    /**
+     * 修改 config  参考char19 配置管理
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    public static void alterConfigs() throws ExecutionException, InterruptedException {
+        Properties props = initConfig();
+        AdminClient client = AdminClient.create(props);
+        ConfigResource resource = new ConfigResource(ConfigResource.Type.TOPIC, TOPIC);
+        ConfigEntry entry = new ConfigEntry("cleanup.policy", "compact");
+        Config config = new Config(Collections.singleton(entry));
+        Map<ConfigResource, Config> configs = new HashMap<>();
+        configs.put(resource, config);
+        AlterConfigsResult result = client.alterConfigs(configs);
+        result.all().get();
+        client.close();
+    }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         createTopicWithAdminClient();
-
+        describeConfigs();
+        alterConfigs();
     }
 }
