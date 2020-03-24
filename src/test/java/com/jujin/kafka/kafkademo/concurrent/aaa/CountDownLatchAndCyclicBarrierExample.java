@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
  *  使用对账做例子  订单和派送单  需要将差异保存至差异库中
  *
  * CyclicBarrier 和 CountDownLatch 的区别？
+ *  CountDownLatch 是计数器，线程完成一个记录一个，只不过计数不是递增而是递减，而 CyclicBarrier 更像是一个阀门，需要所有线程都到达，阀门才能打开，然后继续执行。
  *  CountDownLatch 是计数器，只能使用一次。(一个线程（多个线程）等待,而其他的 N 个线程在完成“某件事情”之后，可以终止，也可以等待。)
  *  CyclicBarrier 的计数器提供 reset 功能，可以多次使用。（重点是多个线程，在任意一个线程没有完成，所有的线程都必须等待）
  */
